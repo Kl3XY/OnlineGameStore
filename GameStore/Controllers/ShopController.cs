@@ -22,7 +22,58 @@ namespace GameStore.Controllers
         // GET: Shop
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Games.ToListAsync());
+            var shop = new Shop();
+
+            var games = (from g in _context.Games select g).ToList();
+
+            var list = new List<Game>();
+            foreach (var item in games)
+            {
+                if (item.isFeatured == true)
+                {
+                    list.Add(item);
+                }
+            }
+            shop.FeaturedGames = list;
+            shop.Games = games;
+
+            return View(shop);
+        }
+        public async Task<IActionResult> AddCurrency()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> sys_currencyAdd(int? value, int? id)
+        {
+            var userUpdate = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+
+            try
+            {
+                if (userUpdate != null)
+                {
+                    userUpdate.funds += value ?? 5;
+                }
+                await _context.SaveChangesAsync();
+                setSession(userUpdate);
+                return Redirect("/Shop/Index");
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+            }
+
+            return View(userUpdate);
+        }
+
+        public void setSession(User user)
+        {
+            HttpContext.Session.SetInt32("user_ID", user.ID);
+            HttpContext.Session.SetString("user_Name", user.Name);
+            HttpContext.Session.SetInt32("user_Funds", user.funds);
         }
 
         // GET: Shop/Details/5

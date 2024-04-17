@@ -59,11 +59,13 @@
             <span style="float:right;">
                 @if (Context.Session.GetInt32("user_ID") == null)
                 {
+                    
                     <a class="navbar-button" asp-area="" asp-controller="Users" asp-action="Create">Register</a>
                     <a class="navbar-button" asp-area="" asp-controller="Users" asp-action="Access">Login</a>
                 }
                 else
                 {
+                    <a class="navbar-button" asp-area="" asp-controller="Shop" asp-action="AddCurrency">@Context.Session.GetInt32("user_Funds") €</a>
                     <a class="navbar-button" asp-controller="Users" asp-action="Details" asp-route-id="@Context.Session.GetInt32("user_ID")">@Context.Session.GetString("user_Name")</a>
                 }
             </span>

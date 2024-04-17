@@ -1,47 +1,104 @@
-﻿@model IEnumerable<GameStore.Models.Game>
+﻿@model Shop
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>STORE</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+<h2>FEATURED</h2>
+<style>
+    th, td {
+        color:white;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: white;
+    }
+
+    .shopGrid {
+        display: inline-grid;
+        column-width: 35vw;
+        column-gap: 75px;
+        row-gap: 75px;
+    }
+
+    .shopItem {
+        background-color: #342D3D;
+        width: 100%;
+        height: 100%;
+        padding: 15px;
+        align-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .shopItem:hover {
+        background-color: #403551;
+    }
+
+    .picturePlaceHolder-featured {
+        width: 115px;
+        height: 150px;
+        background-color: gray;
+    }
+
+    .picturePlaceHolder-unfeatured {
+        width: 115px;
+        height: 50px;
+        background-color: gray;
+    }
+
+    .featured-list {
+        align-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #201C26;
+        padding: 15px;
+    }
+
+    .shopItem-unfeatured {
+        background-color: #201C26;
+        margin-bottom: 5px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .shopItem-unfeatured:hover {
+        background-color: #403551;
+    }
+</style>
+  
+<div class="featured-list">
+    @foreach (var item in Model.FeaturedGames)
+    {
+        <div class="shopGrid">
+            <a class="shopItem" asp-action="Details" asp-route-id="@item.ID">
+                <div class="picturePlaceHolder-featured">&nbsp;</div>
+                <div>
+                    @item.Title <br>
+                    @item.price €
+                </div>
+            </a>
+        </div>
+    }
+</div>
+<br></br>
+<h2>BROWSE</h2>
+<hr>
+@foreach (var item in Model.Games)
+{
+    
+        <a asp-action="Details" asp-route-id="@item.ID">
+            <div class="shopItem-unfeatured">
+                @item.Title @item.price €
+            </div>
+        </a>
+    
 }
-    </tbody>
-</table>

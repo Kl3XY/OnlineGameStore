@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<a asp-action="sys_currencyAdd" asp-route-id="@Context.Session.GetInt32("user_ID")" asp-route-value="5">5 Euros</a>
+<a asp-action="sys_currencyAdd" asp-route-id="@Context.Session.GetInt32("user_ID")" asp-route-value="10">10 Euros</a>
+<a asp-action="sys_currencyAdd" asp-route-id="@Context.Session.GetInt32("user_ID")" asp-route-value="25">25 Euros</a>
+<a asp-action="sys_currencyAdd" asp-route-id="@Context.Session.GetInt32("user_ID")" asp-route-value="50">50 Euros</a>
+<a asp-action="sys_currencyAdd" asp-route-id="@Context.Session.GetInt32("user_ID")" asp-route-value="100">100 Euros</a>

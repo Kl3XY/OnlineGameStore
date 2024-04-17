@@ -78,6 +78,7 @@ namespace GameStore.Controllers
         {
             HttpContext.Session.SetInt32("user_ID", user.ID);
             HttpContext.Session.SetString("user_Name", user.Name);
+            HttpContext.Session.SetInt32("user_Funds", user.funds);
         }
 
         // GET: Users/Edit/5
