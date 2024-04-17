@@ -1,0 +1,35 @@
+﻿@model GameStore.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create an Account</h1>
+
+<hr />
+<div clas>
+    <div >
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <br>
+            <div>
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <p>@Html.ValidationSummary(false)</p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

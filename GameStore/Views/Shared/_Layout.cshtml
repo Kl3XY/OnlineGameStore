@@ -3,44 +3,85 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GameStore</title>
+    <title>@ViewData["Title"] - Beam</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GameStore.styles.css" asp-append-version="true" />
-</head>
+</head><style>
+    html, body {
+        height: 100%;
+        background-color: #222B3F; 
+        color: white;
+    }
+
+    header {
+        background-color: #080A1E;
+    }
+
+    .navbar {
+        padding: 25px;
+        margin: 25px;
+        vertical-align: central;
+    }
+
+    .navbar-button-large {
+        color: white;
+        text-decoration: none;
+        font-size: 26px;
+    }
+
+    .navbar-button {
+        color: white;
+        padding: 10px;
+        text-decoration: none;
+    }
+
+    .hrChange {
+        color:white;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .mainContainer {
+        margin: 25px;
+    }
+
+</style>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GameStore</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar">
+            <p style="text-align:left">
+                <a class="navbar-button-large" asp-area="" asp-controller="Home" asp-action="Index">BEAM</a>
+                <a class="navbar-button" asp-area="" asp-controller="Shop" asp-action="Index">STORE</a>
+                <a class="navbar-button" asp-area="" asp-controller="Community" asp-action="Index">COMMUNITY</a>
+                <a class="navbar-button" asp-area="" asp-controller="Friends" asp-action="Index">FRIENDS</a>
+            </p>
+            <span style="float:right;">
+                @if (Context.Session.GetInt32("user_ID") == null)
+                {
+                    <a class="navbar-button" asp-area="" asp-controller="Users" asp-action="Create">Register</a>
+                    <a class="navbar-button" asp-area="" asp-controller="Users" asp-action="Access">Login</a>
+                }
+                else
+                {
+                    <a class="navbar-button" asp-controller="Users" asp-action="Details" asp-route-id="@Context.Session.GetInt32("user_ID")">@Context.Session.GetString("user_Name")</a>
+                }
+            </span>
         </nav>
+        <hr class="hrChange"></hr>
+        
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - GameStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <div class="left">&nbsp;</div>
+    <div class="main">
+        <div class="mainContainer">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+    </div>
+    <div class="right">&nbsp;</div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
