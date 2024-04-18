@@ -69,6 +69,32 @@ namespace GameStore.Controllers
             return View(userUpdate);
         }
 
+        public async Task<IActionResult> sys_purchaseGame(int? id, int? gameID)
+        {
+            var userUpdate = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            var gameGet = await _context.Games.FirstOrDefaultAsync(m => m.ID == gameID);
+
+            try
+            {
+                if (userUpdate != null)
+                {
+                    _context.Libraries.Add(new Library() {gameID=gameGet.ID, userID=userUpdate.ID});
+                }
+                await _context.SaveChangesAsync();
+                setSession(userUpdate);
+                return RedirectToAction("Details", "Users", new { @id = id });
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+            }
+
+            return View(userUpdate);
+        }
+
         public void setSession(User user)
         {
             HttpContext.Session.SetInt32("user_ID", user.ID);

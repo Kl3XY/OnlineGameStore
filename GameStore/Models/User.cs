@@ -7,6 +7,6 @@
         public string Password { get; set; }
         public int funds { get; set; }
         public ICollection<User> Friends { get; set; }
-        public ICollection<Game> OwnedGames { get; set; }
+        public ICollection<Library> Library { get; set; }
     }
 }

@@ -32,9 +32,12 @@ namespace GameStore.Controllers
             {
                 return NotFound();
             }
-
             var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.ID == id);
+                    .Include(m => m.Library.Where(u => u.userID == id))
+                        .ThenInclude(m => m.game)
+                    .FirstOrDefaultAsync(m => m.ID == id);
+            /*Essentially inner joins.*/
+
             if (user == null)
             {
                 return NotFound();
@@ -118,7 +121,7 @@ namespace GameStore.Controllers
             if (getUsers != null)
             {
                 setSession(getUsers);
-                return Redirect("/Home/Index");
+                return Redirect("/Shop/Index");
             }
             ModelState.AddModelError("loginfailed", "The Username or the Password you've entered are Invalid.");
             return View();

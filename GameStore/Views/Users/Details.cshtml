@@ -13,6 +13,84 @@
 <br/>
 
 <h2>Games</h2>
-<p>Game 1</p>
-<p>Game 2</p>
-<p>Game 3</p>
+<style>
+    th, td {
+        color: white;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+        a:hover {
+            text-decoration: none;
+            color: white;
+        }
+
+    .shopGrid {
+        display: inline-grid;
+        column-width: 35vw;
+        column-gap: 75px;
+        row-gap: 75px;
+    }
+
+    .shopItem {
+        background-color: #342D3D;
+        width: 100%;
+        height: 100%;
+        padding: 15px;
+        align-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+        .shopItem:hover {
+            background-color: #403551;
+        }
+
+    .picturePlaceHolder-featured {
+        width: 115px;
+        height: 150px;
+        background-color: gray;
+    }
+
+    .picturePlaceHolder-unfeatured {
+        width: 115px;
+        height: 50px;
+        background-color: gray;
+    }
+
+    .featured-list {
+        align-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #201C26;
+        padding: 15px;
+    }
+
+    .shopItem-unfeatured {
+        background-color: #201C26;
+        margin-bottom: 5px;
+        padding: 5px;
+        width: 100%;
+    }
+
+        .shopItem-unfeatured:hover {
+            background-color: #403551;
+        }
+</style>
+<hr></hr>
+<div class="featured-list">
+    @foreach (var item in Model.Library)
+    {
+        <div class="shopGrid">
+            <a class="shopItem" asp-action="Details" asp-controller="Shop" asp-route-id="@item.game.ID">
+                <div class="picturePlaceHolder-featured">&nbsp;</div>
+                <div>
+                    @item.game.Title <br>
+                </div>
+            </a>
+        </div>
+    }
+</div>
