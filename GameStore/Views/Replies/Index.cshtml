@@ -1,20 +1,10 @@
-﻿@model IEnumerable<GameStore.Models.User>
+﻿@model IEnumerable<GameStore.Models.Reply>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-
-<style>
-    th {
-        color: white;
-    }
-
-    td {
-        color: white;
-    }
-</style>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -23,10 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.communityPostID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.userID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.message)
             </th>
             <th></th>
         </tr>
@@ -35,10 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.communityPostID)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayFor(modelItem => item.userID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.message)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

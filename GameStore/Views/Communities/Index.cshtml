@@ -5,43 +5,45 @@
 }
 
 <h1>Index</h1>
-
+<style>
+    
+</style>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Add to discussion</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.message)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.game)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.user)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.game.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.user.ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+
+@if (Context.Session.GetInt32("user_ID") != null)
+{
+    <a asp-action="Create">
+        <div class="messageBackdrop" style="background-color: green">
+            <div class="messageHeader" style="color: white; background-color:limegreen">
+                Create a discussion
+            </div>
+        </div>
+    </a>
 }
-    </tbody>
-</table>
+else
+{
+    <a asp-action="access" asp-controller="Users">
+        <div class="messageBackdrop" style="background-color: red">
+            <div class="messageHeader" style="color: white; background-color:crimson">
+                Login to create a discussion!
+            </div>
+        </div>
+    </a>
+}
+
+<br></br>
+
+@foreach (var item in Model) {
+    <div class="messageBackdrop">
+        <div class="messageHeader">
+            @item.user.Name talks about @item.game.Title <br>
+            Add as Friend
+        </div>
+        <div class="messageContent">
+            @item.message
+        </div>
+    </div>
+}
+

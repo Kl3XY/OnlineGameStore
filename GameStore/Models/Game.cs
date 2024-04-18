@@ -7,5 +7,6 @@
         public string Description { get; set; }
         public float price { get; set; }
         public bool isFeatured { get; set; }
+
     }
 }
