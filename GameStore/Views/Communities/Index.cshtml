@@ -6,7 +6,9 @@
 
 <h1>Index</h1>
 <style>
-    
+    a {
+        color: white;
+    }
 </style>
 <p>
     <a asp-action="Create">Add to discussion</a>
@@ -36,14 +38,17 @@ else
 <br></br>
 
 @foreach (var item in Model) {
+    
     <div class="messageBackdrop">
         <div class="messageHeader">
             @item.user.Name talks about @item.game.Title <br>
             Add as Friend
         </div>
-        <div class="messageContent">
-            @item.message
-        </div>
+        <a asp-action="Details" asp-route-id="@item.ID">
+            <div class="messageContent">
+                @item.title
+            </div>
+        </a>
     </div>
 }
 

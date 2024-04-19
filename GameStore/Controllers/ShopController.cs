@@ -24,18 +24,8 @@ namespace GameStore.Controllers
         {
             var shop = new Shop();
 
-            var games = (from g in _context.Games select g).ToList();
-
-            var list = new List<Game>();
-            foreach (var item in games)
-            {
-                if (item.isFeatured == true)
-                {
-                    list.Add(item);
-                }
-            }
-            shop.FeaturedGames = list;
-            shop.Games = games;
+            shop.FeaturedGames = _context.Games.Where(m => m.isFeatured);
+            shop.Games = _context.Games;
 
             return View(shop);
         }

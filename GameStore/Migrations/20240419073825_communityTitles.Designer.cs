@@ -4,6 +4,7 @@ using GameStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStore.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240419073825_communityTitles")]
+    partial class communityTitles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,27 +25,6 @@ namespace GameStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GameStore.Models.Comments", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("communityID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("communityID");
-
-                    b.ToTable("Comments", (string)null);
-                });
-
             modelBuilder.Entity("GameStore.Models.Community", b =>
                 {
                     b.Property<int>("ID")
@@ -50,9 +32,6 @@ namespace GameStore.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("gameID")
                         .HasColumnType("int");
@@ -115,6 +94,33 @@ namespace GameStore.Migrations
                     b.ToTable("Library", (string)null);
                 });
 
+            modelBuilder.Entity("GameStore.Models.Reply", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int?>("commentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("communityPostID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("userID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("commentID");
+
+                    b.ToTable("Reply", (string)null);
+                });
+
             modelBuilder.Entity("GameStore.Models.User", b =>
                 {
                     b.Property<int>("ID")
@@ -140,17 +146,6 @@ namespace GameStore.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("GameStore.Models.Comments", b =>
-                {
-                    b.HasOne("GameStore.Models.Community", "community")
-                        .WithMany("comments")
-                        .HasForeignKey("communityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("community");
                 });
 
             modelBuilder.Entity("GameStore.Models.Community", b =>
@@ -187,6 +182,15 @@ namespace GameStore.Migrations
                         .IsRequired();
 
                     b.Navigation("game");
+                });
+
+            modelBuilder.Entity("GameStore.Models.Reply", b =>
+                {
+                    b.HasOne("GameStore.Models.Community", "comment")
+                        .WithMany("comments")
+                        .HasForeignKey("commentID");
+
+                    b.Navigation("comment");
                 });
 
             modelBuilder.Entity("GameStore.Models.User", b =>

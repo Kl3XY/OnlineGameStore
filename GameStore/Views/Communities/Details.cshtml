@@ -4,33 +4,30 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Discussions</h1>
 
 <div>
-    <h4>Community</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.message)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.message)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.game)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.game.ID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.user)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.user.ID)
-        </dd>
-    </dl>
+    <div class="messageBackdrop">
+        <div class="messageHeader">
+            @Model.user.Name talks about @Model.game.Title <br>
+            @if (Model.DateTime != null)
+            {
+                <span>
+                    Posted on: @Model.DateTime.ToString("dd'.'MM'.'yyyy' @ 'HH':'mm':'ss")
+                </span>
+                <br>
+            }
+            <a asp-controller="Shop" asp-action="Index">Add to Friends</a>
+        </div>
+        <div class="messageContent">
+            @Model.message
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<a asp-action="Create" asp-controller="Comments" asp-route-ID="@Model.ID">Reply</a>
+
+@foreach(var comment in Model.comments)
+{
+    <p>@comment.Message</p>
+}

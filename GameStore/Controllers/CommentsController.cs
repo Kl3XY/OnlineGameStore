@@ -10,24 +10,23 @@ using GameStore.Models;
 
 namespace GameStore.Controllers
 {
-    public class RepliesController : Controller
+    public class CommentsController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public RepliesController(DatabaseContext context)
+        public CommentsController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Replies
+        // GET: Comments
         public async Task<IActionResult> Index()
         {
-            
-
-            return View(await _context.Reply.ToListAsync());
+            var databaseContext = _context.Comments.Include(c => c.community);
+            return View(await databaseContext.ToListAsync());
         }
 
-        // GET: Replies/Details/5
+        // GET: Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,40 +34,42 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var reply = await _context.Reply
+            var comments = await _context.Comments
+                .Include(c => c.community)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (reply == null)
+            if (comments == null)
             {
                 return NotFound();
             }
 
-            return View(reply);
+            return View(comments);
         }
 
-        // GET: Replies/Create
-        public IActionResult Create(int? id)
+        // GET: Comments/Create
+        public IActionResult Create(int communityID)
         {
+            var comment = new Comments() { communityID = communityID };
 
-            return View(new Reply() {communityPostID=id ?? 1, userID=HttpContext.Session.GetInt32("user_ID")?? 1});
+            return View(comment);
         }
 
-        // POST: Replies/Create
+        // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,message")] Reply reply)
+        public async Task<IActionResult> Create([Bind("Message")] Comments comments)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reply);
+                _context.Add(comments);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(reply);
+            ViewData["communityID"] = new SelectList(_context.Communities, "ID", "ID", comments.communityID);
+            return View(comments);
         }
 
-        // GET: Replies/Edit/5
+        // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +77,23 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var reply = await _context.Reply.FindAsync(id);
-            if (reply == null)
+            var comments = await _context.Comments.FindAsync(id);
+            if (comments == null)
             {
                 return NotFound();
             }
-            return View(reply);
+            ViewData["communityID"] = new SelectList(_context.Communities, "ID", "ID", comments.communityID);
+            return View(comments);
         }
 
-        // POST: Replies/Edit/5
+        // POST: Comments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,communityPostID,userID,message")] Reply reply)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Message,communityID")] Comments comments)
         {
-            if (id != reply.ID)
+            if (id != comments.ID)
             {
                 return NotFound();
             }
@@ -100,12 +102,12 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                    _context.Update(reply);
+                    _context.Update(comments);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReplyExists(reply.ID))
+                    if (!CommentsExists(comments.ID))
                     {
                         return NotFound();
                     }
@@ -116,10 +118,11 @@ namespace GameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(reply);
+            ViewData["communityID"] = new SelectList(_context.Communities, "ID", "ID", comments.communityID);
+            return View(comments);
         }
 
-        // GET: Replies/Delete/5
+        // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,34 +130,35 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var reply = await _context.Reply
+            var comments = await _context.Comments
+                .Include(c => c.community)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (reply == null)
+            if (comments == null)
             {
                 return NotFound();
             }
 
-            return View(reply);
+            return View(comments);
         }
 
-        // POST: Replies/Delete/5
+        // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reply = await _context.Reply.FindAsync(id);
-            if (reply != null)
+            var comments = await _context.Comments.FindAsync(id);
+            if (comments != null)
             {
-                _context.Reply.Remove(reply);
+                _context.Comments.Remove(comments);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ReplyExists(int id)
+        private bool CommentsExists(int id)
         {
-            return _context.Reply.Any(e => e.ID == id);
+            return _context.Comments.Any(e => e.ID == id);
         }
     }
 }

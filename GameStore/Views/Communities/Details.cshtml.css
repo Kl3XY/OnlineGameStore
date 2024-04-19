@@ -1,0 +1,23 @@
+﻿.messageBackdrop {
+    float: left;
+    width: 100%;
+    margin-right: 2.5%;
+    padding: 5px;
+    background-color: #201C26;
+}
+
+.messageHeader {
+    float: left;
+    width: 100%;
+    min-height: 35px;
+    padding: 5px;
+    background-color: #31273e;
+}
+
+.messageContent {
+    float: left;
+    width: 100%;
+    margin-top: 5px;
+    background-color: #4d4c4e;
+    padding: 5px;
+}

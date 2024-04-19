@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GameStore.Models.Reply>
+﻿@model IEnumerable<GameStore.Models.Comments>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.communityPostID)
+                @Html.DisplayNameFor(model => model.Message)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.message)
+                @Html.DisplayNameFor(model => model.community)
             </th>
             <th></th>
         </tr>
@@ -28,13 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.communityPostID)
+                @Html.DisplayFor(modelItem => item.Message)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.userID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.message)
+                @Html.DisplayFor(modelItem => item.community.ID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

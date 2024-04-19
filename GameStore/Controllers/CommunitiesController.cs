@@ -22,7 +22,7 @@ namespace GameStore.Controllers
         // GET: Communities
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Communities.Include(c => c.game).Include(c => c.user);
+            var databaseContext = _context.Communities.Include(c => c.game).Include(c => c.user).OrderByDescending(m => m.DateTime);
             return View(await databaseContext.ToListAsync());
         }
 
@@ -37,6 +37,7 @@ namespace GameStore.Controllers
             var community = await _context.Communities
                 .Include(c => c.game)
                 .Include(c => c.user)
+                .Include(c => c.comments)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (community == null)
             {
@@ -58,9 +59,10 @@ namespace GameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,gameID,message")] Community community)
+        public async Task<IActionResult> Create([Bind("ID,title,gameID,message")] Community community)
         {
             community.userID = HttpContext.Session.GetInt32("user_ID") ?? 1;
+            community.DateTime = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Communities.Add(community);

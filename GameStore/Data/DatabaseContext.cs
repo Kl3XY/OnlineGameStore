@@ -11,17 +11,21 @@ namespace GameStore.Data
         public DbSet<User> Users { get; set;}
         public DbSet<Library> Libraries { get; set;}
         public DbSet<Community> Communities { get; set;}
-        public DbSet<Reply> Replies { get; set;}
+        public DbSet<Comments> Comments { get; set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>().ToTable("Game");
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Library>().ToTable("Library");
             modelBuilder.Entity<Community>().ToTable("Community");
-            modelBuilder.Entity<Reply>().ToTable("Reply");
+            modelBuilder.Entity<Comments>().ToTable("Comments");
 
             modelBuilder.Entity<Library>().HasKey(vf => new { vf.gameID, vf.userID });
+            modelBuilder.Entity<Community>()
+                .HasMany(c => c.comments)
+                    .WithOne(c => c.community)
+                    .HasForeignKey(c => c.communityID)
+                .HasPrincipalKey(c => c.ID);
         }
-        public DbSet<GameStore.Models.Reply> Reply { get; set; }
     }
 }
