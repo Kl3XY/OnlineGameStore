@@ -59,17 +59,15 @@ namespace GameStore.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Message")] Comments comments)
+        public async Task<IActionResult> Create([Bind("communityID", "Message")] Comments comments)
         {
-            var ID = Convert.ToInt32(RouteData.Values["id"]);
             if (ModelState.IsValid)
             {
-                comments.communityID = ID;
                 comments.UserID = HttpContext.Session.GetInt32("user_ID") ?? 0;
                 _context.Add(comments);
                 await _context.SaveChangesAsync();
             }
-            return Redirect("/Communities/Details/" + ID.ToString());
+            return Redirect("/Communities/Details/" + comments.communityID);
         }
 
         // GET: Comments/Edit/5

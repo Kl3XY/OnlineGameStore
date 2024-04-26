@@ -1,31 +1,24 @@
-﻿@model IEnumerable<GameStore.Models.Chat>
+﻿@model GameStore.ViewModels.openChatModel
 
 @{
     ViewData["Title"] = "Index";
+
+    var user1 = Model.user;
+    var user2 = Model.user2;
 }
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @*
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@foreach (var item in Model.chats) {
+    if (user1.ID == item.user1Id)
+    {
+        <p>@user1.Name : @item.message</p>
+    } else
+    {
+        <p>@user2.Name : @item.message</p>
+    }
+
 }
-    </tbody>
-</table>
-        *@
+<p>
+    <a asp-action="Create" asp-route-userID1="@Model.userID" asp-route-userID2="@Model.user2ID">Respond...</a>
+</p>

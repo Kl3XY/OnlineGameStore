@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Data;
 using GameStore.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
+using GameStore.ViewModels;
 
 namespace GameStore.Controllers
 {
@@ -20,11 +22,21 @@ namespace GameStore.Controllers
         }
 
         // GET: Chats
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            return View(await _context.Chats.ToListAsync());
+            var openChat = new openChatModel();
+            openChat.userID = HttpContext.Session.GetInt32("user_ID") ?? -1;
+            openChat.user = await _context.Users.FirstOrDefaultAsync(c => c.ID == openChat.userID);
+            openChat.user2ID = id;
+            openChat.user2 = await _context.Users.FirstOrDefaultAsync(c => c.ID == openChat.user2ID);
+
+            openChat.chats = await _context.Chats
+                .Where(c => c.user2Id == id && c.user1Id == HttpContext.Session.GetInt32("user_ID") || c.user2Id == HttpContext.Session.GetInt32("user_ID") && c.user1Id == id)
+                .ToListAsync();
+
+            return View(openChat);
         }
-        /*
+
         // GET: Chats/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,14 +54,11 @@ namespace GameStore.Controllers
 
             return View(chat);
         }
-        */
-        // GET: Chats/Create
-        public async Task<IActionResult> Create(int id)
-        {
-            var chat = _context.Chats
-                .Include(u => u.message)
-                .Where(i => i.user2Id == id && i.user1Id == HttpContext.Session.GetInt32("user_ID"));
 
+        // GET: Chats/Create
+        public IActionResult Create(int userID1, int userID2)
+        {
+            var chat = new Chat() { user1Id = userID1, user2Id = userID2};
             return View(chat);
         }
 
@@ -58,20 +67,19 @@ namespace GameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("messsage")] Chat chat)
+        public async Task<IActionResult> Create([Bind("message", "user1Id", "user2Id")] Chat chat)
         {
-            var ID = Convert.ToInt32(RouteData.Values["id"]);
-            chat.user1Id = HttpContext.Session.GetInt32("user_ID") ?? -1;
-            chat.user2Id = ID;
+            chat.dateTime = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 _context.Add(chat);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Redirect("/Chats/Index/" + chat.user2Id);
             }
             return View(chat);
         }
-        /*
+
         // GET: Chats/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,7 +101,7 @@ namespace GameStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id")] Chat chat)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,user1Id,user2Id,dateTime,message")] Chat chat)
         {
             if (id != chat.Id)
             {
@@ -160,6 +168,5 @@ namespace GameStore.Controllers
         {
             return _context.Chats.Any(e => e.Id == id);
         }
-        */
     }
 }

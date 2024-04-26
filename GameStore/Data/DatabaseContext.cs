@@ -29,7 +29,7 @@ namespace GameStore.Data
             
             modelBuilder.Entity<Library>().HasKey(vf => new { vf.gameID, vf.userID });
             modelBuilder.Entity<Message>().HasKey(vf => new { vf.userID, vf.chatID });
-            modelBuilder.Entity<Chat>().HasKey(vf => new { vf.user1Id, vf.user2Id });
+            modelBuilder.Entity<Chat>().HasKey(vf => new { vf.Id});
             modelBuilder.Entity<Friend>().HasKey(vf => new { vf.userID, vf.chatID});
             modelBuilder.Entity<Community>()
                 .HasMany(c => c.comments)
@@ -39,7 +39,7 @@ namespace GameStore.Data
 
             modelBuilder.Entity<Comments>()
                 .HasOne(c => c.User);
-                
+
         }
     }
 }
