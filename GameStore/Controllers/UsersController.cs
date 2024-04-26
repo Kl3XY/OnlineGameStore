@@ -46,6 +46,13 @@ namespace GameStore.Controllers
             return View(user);
         }
 
+        public async Task<IActionResult> sys_logoutUser()
+        {
+            HttpContext.Session.Remove("user_ID");
+            HttpContext.Session.Remove("user_Funds");
+            return Redirect("/Shop/Index");
+        }
+
         // GET: Users/Create
         public IActionResult Create()
         {

@@ -10,23 +10,22 @@ using GameStore.Models;
 
 namespace GameStore.Controllers
 {
-    public class CommentsController : Controller
+    public class ChatsController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public CommentsController(DatabaseContext context)
+        public ChatsController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Comments
+        // GET: Chats
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Comments.Include(c => c.community);
-            return View(await databaseContext.ToListAsync());
+            return View(await _context.Chats.ToListAsync());
         }
-
-        // GET: Comments/Details/5
+        /*
+        // GET: Chats/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +33,46 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var comments = await _context.Comments
-                .Include(u => u.User)
-                .Include(c => c.community)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            
-            if (comments == null)
+            var chat = await _context.Chats
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (chat == null)
             {
                 return NotFound();
             }
 
-            return View(comments);
+            return View(chat);
         }
-
-        // GET: Comments/Create
-        public IActionResult Create(int ID)
+        */
+        // GET: Chats/Create
+        public async Task<IActionResult> Create(int id)
         {
-            var comment = new Comments() { communityID = ID };
+            var chat = _context.Chats
+                .Include(u => u.message)
+                .Where(i => i.user2Id == id && i.user1Id == HttpContext.Session.GetInt32("user_ID"));
 
-            return View(comment);
+            return View(chat);
         }
 
-        // POST: Comments/Create
+        // POST: Chats/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Message")] Comments comments)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("messsage")] Chat chat)
         {
             var ID = Convert.ToInt32(RouteData.Values["id"]);
+            chat.user1Id = HttpContext.Session.GetInt32("user_ID") ?? -1;
+            chat.user2Id = ID;
             if (ModelState.IsValid)
             {
-                comments.communityID = ID;
-                comments.UserID = HttpContext.Session.GetInt32("user_ID") ?? 0;
-                _context.Add(comments);
+                _context.Add(chat);
                 await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return Redirect("/Communities/Details/" + ID.ToString());
+            return View(chat);
         }
-
-        // GET: Comments/Edit/5
+        /*
+        // GET: Chats/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,23 +80,22 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var comments = await _context.Comments.FindAsync(id);
-            if (comments == null)
+            var chat = await _context.Chats.FindAsync(id);
+            if (chat == null)
             {
                 return NotFound();
             }
-            ViewData["communityID"] = new SelectList(_context.Communities, "ID", "ID", comments.communityID);
-            return View(comments);
+            return View(chat);
         }
 
-        // POST: Comments/Edit/5
+        // POST: Chats/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Message,communityID")] Comments comments)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] Chat chat)
         {
-            if (id != comments.ID)
+            if (id != chat.Id)
             {
                 return NotFound();
             }
@@ -105,12 +104,12 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                    _context.Update(comments);
+                    _context.Update(chat);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentsExists(comments.ID))
+                    if (!ChatExists(chat.Id))
                     {
                         return NotFound();
                     }
@@ -121,11 +120,10 @@ namespace GameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["communityID"] = new SelectList(_context.Communities, "ID", "ID", comments.communityID);
-            return View(comments);
+            return View(chat);
         }
 
-        // GET: Comments/Delete/5
+        // GET: Chats/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,35 +131,35 @@ namespace GameStore.Controllers
                 return NotFound();
             }
 
-            var comments = await _context.Comments
-                .Include(c => c.community)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (comments == null)
+            var chat = await _context.Chats
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (chat == null)
             {
                 return NotFound();
             }
 
-            return View(comments);
+            return View(chat);
         }
 
-        // POST: Comments/Delete/5
+        // POST: Chats/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var comments = await _context.Comments.FindAsync(id);
-            if (comments != null)
+            var chat = await _context.Chats.FindAsync(id);
+            if (chat != null)
             {
-                _context.Comments.Remove(comments);
+                _context.Chats.Remove(chat);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CommentsExists(int id)
+        private bool ChatExists(int id)
         {
-            return _context.Comments.Any(e => e.ID == id);
+            return _context.Chats.Any(e => e.Id == id);
         }
+        */
     }
 }

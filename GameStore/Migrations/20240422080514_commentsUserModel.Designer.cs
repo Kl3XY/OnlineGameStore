@@ -4,6 +4,7 @@ using GameStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStore.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240422080514_commentsUserModel")]
+    partial class commentsUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,19 +24,6 @@ namespace GameStore.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GameStore.Models.Chat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Chat", (string)null);
-                });
 
             modelBuilder.Entity("GameStore.Models.Comments", b =>
                 {
@@ -46,15 +36,10 @@ namespace GameStore.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
                     b.Property<int>("communityID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("UserID");
 
                     b.HasIndex("communityID");
 
@@ -91,22 +76,6 @@ namespace GameStore.Migrations
                     b.HasIndex("userID");
 
                     b.ToTable("Community", (string)null);
-                });
-
-            modelBuilder.Entity("GameStore.Models.Friend", b =>
-                {
-                    b.Property<int>("userID1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("userID2")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chatID")
-                        .HasColumnType("int");
-
-                    b.HasKey("userID1", "userID2", "chatID");
-
-                    b.ToTable("Friend", (string)null);
                 });
 
             modelBuilder.Entity("GameStore.Models.Game", b =>
@@ -149,24 +118,6 @@ namespace GameStore.Migrations
                     b.ToTable("Library", (string)null);
                 });
 
-            modelBuilder.Entity("GameStore.Models.Message", b =>
-                {
-                    b.Property<int>("userID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("chatID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("userID", "chatID");
-
-                    b.HasIndex("chatID");
-
-                    b.ToTable("Message", (string)null);
-                });
-
             modelBuilder.Entity("GameStore.Models.User", b =>
                 {
                     b.Property<int>("ID")
@@ -196,17 +147,11 @@ namespace GameStore.Migrations
 
             modelBuilder.Entity("GameStore.Models.Comments", b =>
                 {
-                    b.HasOne("GameStore.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
-
                     b.HasOne("GameStore.Models.Community", "community")
                         .WithMany("comments")
                         .HasForeignKey("communityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
 
                     b.Navigation("community");
                 });
@@ -247,25 +192,11 @@ namespace GameStore.Migrations
                     b.Navigation("game");
                 });
 
-            modelBuilder.Entity("GameStore.Models.Message", b =>
-                {
-                    b.HasOne("GameStore.Models.Chat", null)
-                        .WithMany("messages")
-                        .HasForeignKey("chatID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GameStore.Models.User", b =>
                 {
                     b.HasOne("GameStore.Models.User", null)
                         .WithMany("Friends")
                         .HasForeignKey("UserID");
-                });
-
-            modelBuilder.Entity("GameStore.Models.Chat", b =>
-                {
-                    b.Navigation("messages");
                 });
 
             modelBuilder.Entity("GameStore.Models.Community", b =>

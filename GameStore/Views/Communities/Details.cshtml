@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Discussions</h1>
+<h1>@Model.title</h1>
 
 <div>
     <div class="messageBackdrop">
@@ -17,7 +17,10 @@
                 </span>
                 <br>
             }
-            <a asp-controller="Shop" asp-action="Index">Add to Friends</a>
+            @if (Context.Session.GetInt32("user_ID") != -1 && Context.Session.GetInt32("user_ID") != Model.user.ID)
+            {
+                <a asp-action="sys_addFriend" asp-route-id="@Model.user.Name"> Add to Friends</a>
+            }
         </div>
         <div class="messageContent">
             @Model.message
@@ -25,9 +28,36 @@
     </div>
 </div>
 
-<a asp-action="Create" asp-controller="Comments" asp-route-ID="@Model.ID">Reply</a>
-
+@if (Context.Session.GetInt32("user_ID") != -1)
+{
+    <a asp-action="Create" asp-controller="Comments" asp-route-ID="@Model.ID">Reply</a>
+}
 @foreach(var comment in Model.comments)
 {
-    <p>@comment.Message</p>
+    <div>
+        <div class="messageBackdrop">
+            <div class="messageHeader">
+                @if (comment.User != null)
+                {
+                    <span>
+                        @comment.User.Name commented...
+                    </span>
+                    @if (Context.Session.GetInt32("user_ID") != -1 && Context.Session.GetInt32("user_ID") != comment.User.ID)
+                    {
+                        <a asp-action="sys_addFriend" asp-route-id="@comment.User.ID"> Add to Friends</a>
+                    }
+                } else
+                {
+                    <span>
+                        Deleted User
+                    </span>
+                }
+                
+            </div>
+            <div class="messageContent">
+                @comment.Message
+            </div>
+        </div>
+    </div>
+
 }

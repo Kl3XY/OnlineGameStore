@@ -10,9 +10,6 @@
         color: white;
     }
 </style>
-<p>
-    <a asp-action="Create">Add to discussion</a>
-</p>
 
 @if (Context.Session.GetInt32("user_ID") != null)
 {
@@ -42,7 +39,10 @@ else
     <div class="messageBackdrop">
         <div class="messageHeader">
             @item.user.Name talks about @item.game.Title <br>
-            Add as Friend
+            @if (Context.Session.GetInt32("user_ID") != null && Context.Session.GetInt32("user_ID") != item.user.ID)
+            {
+                <a asp-action="sys_addFriend" asp-route-id="@item.user.ID"> Add to Friends</a>
+            }
         </div>
         <a asp-action="Details" asp-route-id="@item.ID">
             <div class="messageContent">

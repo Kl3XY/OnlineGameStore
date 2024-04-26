@@ -38,6 +38,7 @@ namespace GameStore.Controllers
                 .Include(c => c.game)
                 .Include(c => c.user)
                 .Include(c => c.comments)
+                    .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (community == null)
             {
@@ -146,6 +147,25 @@ namespace GameStore.Controllers
 
             return View(community);
         }
+
+        public async Task<IActionResult> sys_addFriend(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var userToAdd = await _context.Users
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            var userToUpdate = await _context.Users
+                .Include(m => m.Friends)
+                .FirstOrDefaultAsync(m => m.ID == HttpContext.Session.GetInt32("user_ID"));
+            userToUpdate.Friends.Add(userToAdd);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // POST: Communities/Delete/5
         [HttpPost, ActionName("Delete")]

@@ -1,0 +1,10 @@
+﻿@model GameStore.Models.User
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+@foreach (var item in Model.Friends) {
+    <a asp-action="Create" asp-controller="Chats" asp-route-id="@item.ID">@item.Name</a>
+}
