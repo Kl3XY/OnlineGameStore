@@ -13,17 +13,75 @@ namespace GameStore.Controllers
     public class CommunitiesController : Controller
     {
         private readonly DatabaseContext _context;
+        public static int pageIndex = 0;
+        public static int pageAmount = 5;
+        public static List<Community> IndexContent;
 
         public CommunitiesController(DatabaseContext context)
         {
             _context = context;
+            IndexContent = _context.Communities
+                .Include(c => c.game)
+                .Include(c => c.user)
+                .Skip(pageAmount * Math.Max(pageIndex, 0))
+                .Take(pageAmount)
+                .OrderByDescending(m => m.DateTime)
+                .ToList();
         }
 
         // GET: Communities
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Communities.Include(c => c.game).Include(c => c.user).OrderByDescending(m => m.DateTime);
-            return View(await databaseContext.ToListAsync());
+            return View(paginatedList(pageIndex, pageAmount, IndexContent));
+        }
+
+        public async Task<IActionResult> sys_addPageIndex()
+        {
+            pageIndex++;
+            IndexContent = _context.Communities
+                .Include(c => c.game)
+                .Include(c => c.user)
+                .Skip(pageAmount * Math.Max(pageIndex, 0))
+                .Take(pageAmount)
+                .OrderByDescending(m => m.DateTime)
+                .ToList();
+            return Redirect("/Communities/Index");
+        }
+
+        public async Task<IActionResult> sys_subtractPageIndex()
+        {
+            if (pageIndex -1 < 0)
+            {
+                return Redirect("/Communities/Index");
+            }
+            pageIndex--;
+            IndexContent = _context.Communities
+                .Include(c => c.game)
+                .Include(c => c.user)
+                .Skip(pageAmount * Math.Max(pageIndex, 0))
+                .Take(pageAmount)
+                .OrderByDescending(m => m.DateTime)
+                .ToList();
+            return Redirect("/Communities/Index");
+        }
+
+        public static List<Community> paginatedList(int pageIndex, int entryAmount, List<Community> list)
+        {
+            return (list);
+        }
+
+        public static bool canIncreasePage(int pageIndex, int entryAmount, List<Community> list)
+        {
+            return (true);
+        }
+
+        public static bool canDecreasePage(int pageIndex)
+        {
+            if (pageIndex - 1 > 0)
+            {
+                return (false);
+            }
+            return (true);
         }
 
         // GET: Communities/Details/5

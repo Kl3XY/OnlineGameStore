@@ -33,12 +33,13 @@ else
 }
 
 <br></br>
-
+<a asp-action="sys_subtractPageIndex">Previous</a>
+<a asp-action="sys_addPageIndex">Next</a>
 @foreach (var item in Model) {
     
     <div class="messageBackdrop">
         <div class="messageHeader">
-            @item.user.Name talks about @item.game.Title <br>
+            @item.ID x @item.user.Name talks about @item.game.Title <br>
             @if (Context.Session.GetInt32("user_ID") != null && Context.Session.GetInt32("user_ID") != item.user.ID)
             {
                 <a asp-action="sys_addFriend" asp-route-id="@item.user.ID"> Add to Friends</a>
